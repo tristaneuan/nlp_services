@@ -55,8 +55,9 @@ class WikiAuthorsToIdsService(RestfulResource):
         p = pool()
         r = p.map_async(watp_mapper, resp[wiki_id].keys())
         r.wait()
-        return {'status': 200, wiki_id: dict([(a['user'], a['userid']) for page, authors in r.get() if authors
-                                              for a in authors])}
+
+        return {'status': 200, wiki_id: dict([(a['user'], a['userid']) for page, authors in r.get()
+                                              for a in authors if authors])}
 
 
 class WikiAuthorsToPagesService(RestfulResource):
