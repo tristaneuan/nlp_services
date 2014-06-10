@@ -2,21 +2,25 @@
 This is an interface for authority data access within this library
 """
 
+import json
+from collections import defaultdict
+from wikia_dstk.authority import get_db_connection
 from .. import RestfulResource
 from ..caching import cached_service_request
 from ..discourse.entities import WikiPageToEntitiesService
 from ..pooling import pool
-from boto import connect_s3
-from collections import defaultdict
-import json
 
 
 class PreCachedService(RestfulResource):
 
-    def __init__(self):
-        self.bucket = connect_s3().get_bucket('nlp-data')
+    def __init__(self, args):
+        self.db = get_db_connection(args)
+        self.cursor = self.db.cursor()
 
     def get(self, doc_id):
+        self.cursor.execute("""""")
+        # Get data from MySQL
+
         key = self.bucket.get_key('service_responses/%s/%s.get' % (doc_id.replace('_', '/'), self.__class__.__name__))
         if key is None or not key.exists():
             return {'status': 500, 'message': 'Not pre-cached'}
